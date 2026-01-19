@@ -1005,7 +1005,7 @@
                         </div>
                         <div id="customDiv_${dayIndex}" style="display:none;">
                             <label class="text-xs">自定义内容</label>
-                            <textarea placeholder="可以换行，使用示例：输入时间，回车换行，输入内容，回车换行，输入内容" class="custom-textarea mt-1" data-day="${dayIndex}" data-type="customContent"></textarea>
+                            <textarea placeholder="可以换行，使用示例：输入时间，回车换行，输入内容（字数行数自动调节字体大小）" class="custom-textarea mt-1" data-day="${dayIndex}" data-type="customContent"></textarea>
                         </div>
                         <div id="membersDiv_${dayIndex}" style="display:none;">
                             <label class="text-xs">成员（可多选，最多2个）</label>
@@ -1067,7 +1067,7 @@
                             </div>
                             <div id="customContainer_${dayIndex}_18:30" style="display:none;" data-day="${dayIndex}" data-time="18:30" data-type="customContainer">
                                 <label class="text-xs">自定义内容</label>
-                                <textarea placeholder="可以换行，使用示例：输入时间，回车换行，输入内容，回车换行，输入内容" class="custom-textarea mt-1" data-day="${dayIndex}" data-time="18:30" data-type="customContent"></textarea>
+                                <textarea placeholder="可以换行，使用示例：输入时间，回车换行，输入内容（字数行数自动调节字体大小）" class="custom-textarea mt-1" data-day="${dayIndex}" data-time="18:30" data-type="customContent"></textarea>
                             </div>
                             <div id="membersContainer_${dayIndex}_18:30" style="display:none;" data-day="${dayIndex}" data-time="18:30" data-type="members">
                                 <label class="text-xs">成员（可多选，最多2个）</label>
@@ -1126,7 +1126,7 @@
                             </div>
                             <div id="customContainer_${dayIndex}_21:00" style="display:none;" data-day="${dayIndex}" data-time="21:00" data-type="customContainer">
                                 <label class="text-xs">自定义内容</label>
-                                <textarea placeholder="可以换行，使用示例：输入时间，回车换行，输入内容，回车换行，输入内容" class="custom-textarea mt-1" data-day="${dayIndex}" data-time="21:00" data-type="customContent"></textarea>
+                                <textarea placeholder="可以换行，使用示例：输入时间，回车换行，输入内容（字数行数自动调节字体大小）" class="custom-textarea mt-1" data-day="${dayIndex}" data-time="21:00" data-type="customContent"></textarea>
                             </div>
                             <div id="membersContainer_${dayIndex}_21:00" style="display:none;" data-day="${dayIndex}" data-time="21:00" data-type="members">
                                 <label class="text-xs">成员（可多选，最多2个）</label>
@@ -2089,8 +2089,41 @@
                                     } else if (timeData.type === 'members') {
                                         content = formatMembers(timeData.members, timeData.time);
                                     } else if (timeData.type === 'custom') {
-                                        // 处理自定义内容，保留换行
-                                        content = timeData.customContent ? timeData.customContent.replace(/\n/g, '<br>') : '';
+                                        // 处理自定义内容，早晚模式2行特殊处理
+                                        if (timeData.customContent) {
+                                            const lines = timeData.customContent.split('\n').filter(line => line.trim());
+                                            if (lines.length === 2) {
+                                                // 2行时，每行用span包裹，第二行根据长度调整字体大小
+                                                const line1 = lines[0].trim();
+                                                const line2 = lines[1].trim();
+                                                const len = line2.length;
+                                                let fontSize = '';
+                                                if (len < 4) {
+                                                    fontSize = '';
+                                                } else if (len === 4) {
+                                                    fontSize = '0.9em';
+                                                } else if (len === 5) {
+                                                    fontSize = '0.7em';
+                                                } else if (len === 6) {
+                                                    fontSize = '0.6em';
+                                                } else if (len === 7) {
+                                                    fontSize = '0.5em';
+                                                } else if (len === 8) {
+                                                    fontSize = '0.45em';
+                                                } else if (len === 9) {
+                                                    fontSize = '0.4em';
+                                                } else {
+                                                    fontSize = '0.35em';
+                                                }
+                                                const styleAttr = fontSize ? ` style="font-size: ${fontSize};"` : '';
+                                                content = `<span>${line1}</span><br><span${styleAttr}>${line2}</span>`;
+                                            } else {
+                                                // 非2行，保留换行
+                                                content = timeData.customContent.replace(/\n/g, '<br>');
+                                            }
+                                        } else {
+                                            content = '';
+                                        }
                                     }
 
                                     // 调整字体大小
@@ -2136,8 +2169,41 @@
                             } else if (timeData.type === 'members') {
                                 content = formatMembers(timeData.members, timeData.time);
                             } else if (timeData.type === 'custom') {
-                                // 处理自定义内容，保留换行
-                                content = timeData.customContent ? timeData.customContent.replace(/\n/g, '<br>') : '';
+                                // 处理自定义内容，早晚模式2行特殊处理
+                                if (timeData.customContent) {
+                                    const lines = timeData.customContent.split('\n').filter(line => line.trim());
+                                    if (lines.length === 2) {
+                                        // 2行时，每行用span包裹，第二行根据长度调整字体大小
+                                        const line1 = lines[0].trim();
+                                        const line2 = lines[1].trim();
+                                        const len = line2.length;
+                                        let fontSize = '';
+                                        if (len < 4) {
+                                            fontSize = '';
+                                        } else if (len === 4) {
+                                            fontSize = '0.9em';
+                                        } else if (len === 5) {
+                                            fontSize = '0.7em';
+                                        } else if (len === 6) {
+                                            fontSize = '0.6em';
+                                        } else if (len === 7) {
+                                            fontSize = '0.5em';
+                                        } else if (len === 8) {
+                                            fontSize = '0.45em';
+                                        } else if (len === 9) {
+                                            fontSize = '0.4em';
+                                        } else {
+                                            fontSize = '0.35em';
+                                        }
+                                        const styleAttr = fontSize ? ` style="font-size: ${fontSize};"` : '';
+                                        content = `<span>${line1}</span><br><span${styleAttr}>${line2}</span>`;
+                                    } else {
+                                        // 非2行，保留换行
+                                        content = timeData.customContent.replace(/\n/g, '<br>');
+                                    }
+                                } else {
+                                    content = '';
+                                }
                             }
 
                             // 调整字体大小
